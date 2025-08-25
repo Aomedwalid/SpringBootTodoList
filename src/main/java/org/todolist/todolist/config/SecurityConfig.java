@@ -47,6 +47,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http
             , AuthenticationProvider authenticationProvider , JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
+                .cors(cors-> {})
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

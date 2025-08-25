@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse getUserResponse(String email) {
         User user = getUserByEmail(email);
-        System.out.println(user);
 
         return UserResponse.newUserResponse(
                 user.getId(),
