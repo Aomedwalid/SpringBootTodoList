@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -99,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
     public void logout(String email , String refreshToken , HttpServletResponse response) {
         log.info("Logout request for user");
 
-        removeRefreshTokenFromCookies(refreshToken , response);
+        removeRefreshTokenFromCookies( response);
         refreshTokenService.deleteAllUserTokens(email);
 
         SecurityContextHolder.clearContext();
@@ -145,20 +146,25 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void saveRefreshTokenInsideCookies(String refreshToken , HttpServletResponse response){
-        Cookie refreshCookie = new Cookie("refresh_token" , refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/auth");
-        refreshCookie.setMaxAge(7*24*60*60);
-        response.addCookie(refreshCookie);
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")   // ✅ SameSite supported here
+                .path("/")
+                .maxAge(7 * 24 * 60 * 60)
+                .build();
+        response.addHeader("Set-Cookie", refreshCookie.toString());
     }
 
-    private void removeRefreshTokenFromCookies(String refreshToken , HttpServletResponse response){
-        Cookie refreshCookie = new Cookie("refresh_token" , refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/auth");
-        refreshCookie.setMaxAge(0);
-        response.addCookie(refreshCookie);
+    private void removeRefreshTokenFromCookies(HttpServletResponse response){
+        ResponseCookie deleteCookie = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(0)   // 👈 tells browser to delete it immediately
+                .build();
+
+        response.addHeader("Set-Cookie", deleteCookie.toString());
     }
 }

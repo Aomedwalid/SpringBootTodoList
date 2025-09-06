@@ -53,7 +53,7 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refreshAccessToken(@CookieValue(value = "refresh_token" , required = false) String refreshToken) {
         System.out.println(refreshToken);
         if (refreshToken == null) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(AuthResponse.failedResponse("fail request"));
         }
 

@@ -13,9 +13,11 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*") // Or your React app's URL
+                        .allowedOrigins("http://localhost:5173" , "https://c4cb1eaad890.ngrok-free.app")
+                        .allowCredentials(true)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .exposedHeaders("Set-Cookie");
             }
         };
     }
