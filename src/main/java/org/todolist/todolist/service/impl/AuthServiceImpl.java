@@ -20,9 +20,12 @@ import org.todolist.todolist.entity.User;
 import org.todolist.todolist.exceptions.customerrors.InvalidTokenException;
 import org.todolist.todolist.exceptions.customerrors.UserAlreadyExistsException;
 import org.todolist.todolist.repository.UserRepository;
+import org.todolist.todolist.security.CustomUserDetails;
 import org.todolist.todolist.security.JwtTokenProvider;
 import org.todolist.todolist.service.AuthService;
 import org.todolist.todolist.service.RefreshTokenService;
+
+import java.time.Duration;
 
 
 @Service
@@ -97,11 +100,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String email , String refreshToken , HttpServletResponse response) {
+    public void logout(String refreshToken , HttpServletResponse response) {
         log.info("Logout request for user");
 
-        removeRefreshTokenFromCookies( response);
-        refreshTokenService.deleteAllUserTokens(email);
+        User user = refreshTokenService.findByToken(refreshToken).getUser();
+
+        removeRefreshTokenFromCookies(response);
+        refreshTokenService.deleteAllUserTokens(user.getEmail());
 
         SecurityContextHolder.clearContext();
 
@@ -125,21 +130,21 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse refreshAccessToken(String refreshToken) {
         RefreshToken currentRefreshToken = refreshTokenService.findByToken(refreshToken);
 
+        User currentUser = currentRefreshToken.getUser();
+
         if(!refreshTokenService.validTokenBoolean(currentRefreshToken)){
             throw new InvalidTokenException("refresh token is invalid");
         }
 
-        User user = currentRefreshToken.getUser();
-
         //generate new token
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail());
+        String accessToken = jwtTokenProvider.generateAccessToken(currentUser.getEmail());
 
         return AuthResponse.success(
                 accessToken,
                 jwtTokenProvider.getAccessTokenExpiration(),
-                user.getId(),
-                user.getEmail(),
-                user.getName(),
+                currentUser.getId(),
+                currentUser.getEmail(),
+                currentUser.getName(),
                 "the token hass been refreshed"
         );
 
@@ -151,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
                 .secure(true)
                 .sameSite("None")   // ✅ SameSite supported here
                 .path("/")
-                .maxAge(7 * 24 * 60 * 60)
+                .maxAge(Duration.ofDays(7))
                 .build();
         response.addHeader("Set-Cookie", refreshCookie.toString());
     }

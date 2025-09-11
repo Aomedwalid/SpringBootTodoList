@@ -6,6 +6,7 @@ import org.todolist.todolist.dto.request.LoginRequest;
 import org.todolist.todolist.dto.request.RegisterRequest;
 import org.todolist.todolist.dto.response.AuthResponse;
 import org.todolist.todolist.entity.User;
+import org.todolist.todolist.security.CustomUserDetails;
 
 public interface AuthService {
 
@@ -19,7 +20,7 @@ public interface AuthService {
 
     //user fetching
 
-    void logout(String email , String refreshToken , HttpServletResponse response);
+    void logout(String refreshToken , HttpServletResponse response);
 
     User getUserFromToken(String Token);
 

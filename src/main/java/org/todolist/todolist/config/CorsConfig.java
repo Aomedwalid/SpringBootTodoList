@@ -13,11 +13,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173" , "https://c4cb1eaad890.ngrok-free.app")
+                        .allowedOrigins("http://localhost:5173" , "https://advanced-to-do-blond.vercel.app")
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .exposedHeaders("Set-Cookie");
+                        .allowedMethods("GET", "POST", "PUT" , "PATCH" , "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
             }
         };
     }

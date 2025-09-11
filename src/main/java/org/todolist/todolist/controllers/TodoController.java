@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.todolist.todolist.dto.request.TodoCreateRequest;
 import org.todolist.todolist.dto.request.UpdateTodoRequest;
+import org.todolist.todolist.dto.response.StatusResponse;
 import org.todolist.todolist.dto.response.TodoResponse;
 import org.todolist.todolist.service.TodoService;
 
@@ -91,11 +92,16 @@ public class TodoController {
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<String> getTodoStats(@AuthenticationPrincipal UserDetails user) {
-        String total = todoService.getCountTodos(user).toString();
-        String completed = todoService.getCountCompletedTodos(user).toString();
+    public ResponseEntity<StatusResponse> getTodoStats(@AuthenticationPrincipal UserDetails user) {
+        Long total = todoService.getCountTodos(user);
+        Long completed = todoService.getCountCompletedTodos(user);
 
-        return ResponseEntity.ok("Total: " + total + ", Completed: " + completed);
+        return ResponseEntity.ok(
+                StatusResponse.builder()
+                        .totalTodos(total)
+                        .completedTodos(completed)
+                        .build()
+        );
     }
 
 }

@@ -29,6 +29,7 @@ public class Todo {
     private String description;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean completed = false;
 
     @ManyToOne(fetch = FetchType.LAZY)

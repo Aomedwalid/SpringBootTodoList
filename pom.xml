@@ -94,6 +94,9 @@
     </dependencies>
 
     <build>
+        <finalName>
+            todoList app
+        </finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

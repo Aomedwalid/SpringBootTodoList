@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthResponse {
     private String accessToken;
+    @Builder.Default
     private String type = "Bearer";
     private Long expiresIn;
     private Long id;

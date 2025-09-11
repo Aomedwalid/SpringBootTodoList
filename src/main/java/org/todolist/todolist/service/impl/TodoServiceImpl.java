@@ -29,7 +29,7 @@ public class TodoServiceImpl implements TodoService {
     @Override
     @Transactional(readOnly = true)
     public List<TodoResponse> getAllTodosByUser(UserDetails user) {
-        List<Todo> resultTodos =  todoRepository.findByUserEmail(user.getUsername());
+        List<Todo> resultTodos =  todoRepository.findByUserEmailOrderByCreatedAtDesc(user.getUsername());
         return todoMapper.toResponseList(resultTodos);
     }
 

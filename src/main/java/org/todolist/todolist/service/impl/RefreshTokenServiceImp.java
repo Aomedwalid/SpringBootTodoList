@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.todolist.todolist.entity.RefreshToken;
 import org.todolist.todolist.entity.User;
+import org.todolist.todolist.exceptions.customerrors.InvalidTokenException;
 import org.todolist.todolist.repository.RefreshTokenRepository;
 import org.todolist.todolist.service.RefreshTokenService;
 
@@ -36,7 +37,7 @@ public class RefreshTokenServiceImp implements RefreshTokenService {
     @Override
     public RefreshToken findByToken(String token) {
         return refreshRepo.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Cannot find the refresh token"));
+                .orElseThrow(() -> new InvalidTokenException("Cannot find the refresh token"));
     }
 
     @Override

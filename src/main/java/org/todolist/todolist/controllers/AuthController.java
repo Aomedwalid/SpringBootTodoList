@@ -37,10 +37,9 @@ public class AuthController {
     }
 
     @PostMapping("logout")
-    public ResponseEntity<String> logoutUser(@AuthenticationPrincipal CustomUserDetails user
-            ,@CookieValue(value = "refresh_token" , required = false) String refreshToken
+    public ResponseEntity<String> logoutUser(@CookieValue(value = "refresh_token" , required = false) String refreshToken
             ,HttpServletResponse response){
-        authService.logout(user.getUsername() ,refreshToken ,  response);
+        authService.logout(refreshToken ,  response);
         return ResponseEntity.ok("User is no longer authenticated");
     }
 
@@ -51,11 +50,6 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshAccessToken(@CookieValue(value = "refresh_token" , required = false) String refreshToken) {
-        System.out.println(refreshToken);
-        if (refreshToken == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(AuthResponse.failedResponse("fail request"));
-        }
 
         AuthResponse RefreshResponse = authService.refreshAccessToken(refreshToken);
         return ResponseEntity.ok(RefreshResponse);

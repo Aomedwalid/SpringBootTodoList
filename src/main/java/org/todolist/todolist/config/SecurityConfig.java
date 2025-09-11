@@ -63,7 +63,12 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/api/auth/login" , "hello" , "/api/auth/register" , "/api/auth/check").permitAll()
+                                .requestMatchers("/api/auth/login",
+                                        "hello" ,
+                                        "/api/auth/register" ,
+                                        "/api/auth/check" ,
+                                        "/api/auth/refresh",
+                                        "/api/auth/logout").permitAll()
                                 .anyRequest().authenticated()
                 )
 
